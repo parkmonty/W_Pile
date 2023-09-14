@@ -7,11 +7,12 @@ def solution(number, limit, power):
         for j in range(1, i + 1):
             if i % j == 0:
                 count += 1
-        if count < limit:
+        if count > limit:
             sum_num += power
         else:
             sum_num += count
         i += 1
+        count = 0
 
     return sum_num
 
