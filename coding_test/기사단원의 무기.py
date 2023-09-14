@@ -11,11 +11,10 @@ def solution(number, limit, power):
     num_list = []
 
     for i in range(1, number + 1):
-        num_list.append(div_count(i))
-
-    for j in range(len(num_list)):
-        if num_list[j] > limit:
-            num_list[j] = power
+        if div_count(i) > limit:
+            num_list.append(power)
+        else:
+            num_list.append(div_count(i))
 
     return sum(num_list)
 
