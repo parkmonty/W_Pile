@@ -1,16 +1,23 @@
+import math
+
 def solution(number, limit, power):
     sum_num = 0
     count = 0
     i = 1
 
     while i <= number:
-        for j in range(1, i + 1):
+        for j in range(1, int(math.sqrt(i)) + 1):
             if i % j == 0:
-                count += 1
+                if i / j == math.sqrt(i):
+                    count += 1
+                else:
+                    count += 2
+
         if count > limit:
             sum_num += power
         else:
             sum_num += count
+
         i += 1
         count = 0
 
