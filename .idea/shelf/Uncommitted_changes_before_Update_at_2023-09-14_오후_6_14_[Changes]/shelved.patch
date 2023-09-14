@@ -1,0 +1,10 @@
+Index: test.py
+===================================================================
+diff --git a/test.py b/test.py
+deleted file mode 100644
+--- a/test.py	(revision bf2bec8630beb06d7dc130f907f420b0cf2fe24d)
++++ /dev/null	(revision bf2bec8630beb06d7dc130f907f420b0cf2fe24d)
+@@ -1,2 +0,0 @@
+-for i in range(12):
+-    print(i)
+\ No newline at end of file

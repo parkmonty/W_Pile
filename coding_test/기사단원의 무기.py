@@ -1,20 +1,17 @@
-def div_count(number):
-    count = 0
-
-    for i in range(1, number + 1):
-        if number % i == 0:
-            count += 1
-
-    return count
-
 def solution(number, limit, power):
     sum_num = 0
+    count = 0
+    i = 1
 
-    for i in range(1, number + 1):
-        if div_count(i) > limit:
+    while i <= number:
+        for j in range(1, i + 1):
+            if i % j == 0:
+                count += 1
+        if count < limit:
             sum_num += power
         else:
-            sum_num += div_count(i)
+            sum_num += count
+        i += 1
 
     return sum_num
 
