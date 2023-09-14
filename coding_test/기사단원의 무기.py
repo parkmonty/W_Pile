@@ -8,15 +8,15 @@ def div_count(number):
     return count
 
 def solution(number, limit, power):
-    num_list = []
+    sum_num = 0
 
     for i in range(1, number + 1):
         if div_count(i) > limit:
-            num_list.append(power)
+            sum_num += power
         else:
-            num_list.append(div_count(i))
+            sum_num += div_count(i)
 
-    return sum(num_list)
+    return sum_num
 
 
 number = 5
