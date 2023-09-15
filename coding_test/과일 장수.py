@@ -1,16 +1,20 @@
+# def solution(k, m, score):
+#     score.sort()
+#     last_num = len(score)
+#     rest_num = last_num % m
+#
+#     index = rest_num
+#     total = 0
+#
+#     while index < last_num:
+#         total += score[index]
+#         index += m
+#
+#     return total * m
+
 def solution(k, m, score):
-    score.sort()
-    last_num = len(score)
-    rest_num = last_num % m
-
-    index = rest_num
-    total = 0
-
-    while index < last_num:
-        total += score[index]
-        index += m
-
-    return total * m
+    # list[n::m] 리스트를 n번 인덱스 부터 m 간격으로 있는 값을 리스트로 반환
+    return sum(sorted(score)[len(score) % m::m]) * m
 
 
 k = 3
