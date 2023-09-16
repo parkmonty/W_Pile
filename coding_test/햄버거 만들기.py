@@ -1,11 +1,14 @@
 def solution(ingredient):
-    hb = "1231"
-    ingredient = "".join(list(map(str, ingredient)))
     count = 0
+    index = 0
 
-    while hb in ingredient:
-        ingredient = ingredient.replace(hb, "", 1)
-        count += 1
+    while index < len(ingredient):
+        if len(ingredient) > index + 3:
+            if ingredient[index : index + 4] == [1, 2, 3, 1]:
+                count += 1
+                del ingredient[index : index + 4]
+                index = 0
+        index += 1
 
     return count
 
