@@ -2,12 +2,11 @@ def solution(ingredient):
     count = 0
     index = 0
 
-    while index < len(ingredient):
-        if len(ingredient) > index + 3:
-            if ingredient[index : index + 4] == [1, 2, 3, 1]:
-                count += 1
-                del ingredient[index : index + 4]
-                index = 0
+    while index < len(ingredient) - 3:
+        if ingredient[index : index + 4] == [1, 2, 3, 1]:
+            count += 1
+            del ingredient[index : index + 4]
+            index = -1
         index += 1
 
     return count
