@@ -4,8 +4,7 @@ def solution(ingredient):
     count = 0
 
     while hb in ingredient:
-        num = ingredient.index(hb)
-        ingredient = ingredient[:num] + ingredient[num + 4:]
+        ingredient = ingredient.replace(hb, "", 1)
         count += 1
 
     return count
