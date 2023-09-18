@@ -1,1 +1,56 @@
+1. Numpy
+  - 일반 list에 비해 빠르고, 메모리 효율적
+  - 반복문 없이 데이터 배열에 대한 처리를 지원
+  - 선형대수와 관련된 다양한 기능을 제공
+  - C, C++, 포트란 등의 언어와 통합 가능
+
+  1) import numpy as np
+    - numpy의 호출 방법
+    - 일반적으로 np라는 alias(별칭) 이용해 호출 (특별한 이유는 없음, 세계적인 약속)
+
+  2) Array creation
+    - test_array = np.array([1, 4, 5, 8], float)
+    - np.array 함수를 활용해 배열 생성 -> ndarray
+    - 하나의 데이터 type만 배열에 넣을 수 있음
+    - list와 가장 큰 차이점 -> Dynamic typing not supported
+    - C의 Array를 사용하여 배열 생성 -> 속도가 매우 빠름
+    - type(test_array[3]) -> numpy.float64 (하나의 데이터가 차지하는 공간이 64bit)
+    
+    # test_array.dtype
+      - numpy array의 데이터 type을 반환
+      - 일반적으로 numpy.float64
+      - test_array = np.array([1, 4, 5, 8], np.float32) -> numpy.float32
+
+    # Array dtype
+      - ndarray object의 메모리 크기를 반환
+      - np.array([1, 4, 5, 8], dtype = np.float32).nbytes -> 16
+
+    # test_array.shape
+      - numpy array object의 dimension 구성을 반환함
+      - Array (vector, matrix, tensor)의 크기, 형태 등에 대한 정보
+      
+      > Array shape (vector)
+        - test_array = np.array([1, 4, 5, 8], float) -> (4,)
+      > Array shape (matrix)
+        - test_array = np.array([[1, 4, 5, 8]], float) -> (1,4)
+      > Array shape (3rd order tensor)
+        - tensor = [[[1, 2, 5, 8], [1, 2, 5, 8], [1, 2, 5, 8]],
+                    [[1, 2, 5, 8], [1, 2, 5, 8], [1, 2, 5, 8]],
+                    [[1, 2, 5, 8], [1, 2, 5, 8], [1, 2, 5, 8]],
+                    [[1, 2, 5, 8], [1, 2, 5, 8], [1, 2, 5, 8]]] -> (4,3,4)
+        - ndim (number of dimension)
+        - np.array(tensor, int).ndim -> 3
+        - size (data의 개수)
+        - np.array(tensor, int).size -> 48
+
+
+
+
+
+
+
+
+
+
+
 
