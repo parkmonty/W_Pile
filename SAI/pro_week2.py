@@ -1,5 +1,5 @@
 # 이론 문제2
-# X O O O O
+# X O O O X
 
 # 실습 문제2
 import numpy as np
