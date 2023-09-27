@@ -1,5 +1,5 @@
 # 이론 문제
-# X O O X X X
+# X O X X O X
 
 
 # 실습 문제
