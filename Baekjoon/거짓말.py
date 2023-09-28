@@ -9,7 +9,7 @@ M = int(temp[1])
 count = 0
 known_p = []
 
-know = sys.stdin.readline()
+know = sys.stdin.readline().split()
 
 if int(know[0]) == 0:
     pass
@@ -30,4 +30,4 @@ while M > 0:
     
     count += 1
     
-sys.stdout.write(count)
+sys.stdout.write(str(count))
