@@ -24,7 +24,7 @@ while M > 0:
     num = int(part[0])
     
     for i in range(1, num + 1):
-        if int(part[i]) not in known_p:
+        if int(part[i]) in known_p:
             M -= 1
             continue
     
