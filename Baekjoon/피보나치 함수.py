@@ -2,21 +2,18 @@
 import sys
 
 def count(N):
-    num_list = [0, 0]
-    if N == 1:
-        num_list[1] += 1
-        return num_list
-    elif N == 0:
-        num_list[0] += 1
-        return num_list
-    else:
-        num_list[0] = count(N - 1)[0] + count(N - 2)[0]
-        num_list[1] = count(N - 1)[1] + count(N - 2)[1]
-        return num_list
+    zero = [1, 0]
+    one = [0, 1]
     
-T = []
-T.append(sys.stdin.readline())
+    if N >= 2:
+        for i in range(2, N + 1):
+            zero.append(zero[i - 1] + zero[i - 2])
+            one.append(one[i - 1] + one[i - 2])
+            
+    sys.stdout.write(f"{zero[N]} {one[N]}\n")
+    
 
-for i in T:
-    c = count(int(i))
-    print(str(c)[0] + " " + str(c)[1])
+T = int(sys.stdin.readline())
+
+for _ in range(T):
+    count(int(sys.stdin.readline()))
