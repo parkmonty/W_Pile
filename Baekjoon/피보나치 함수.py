@@ -2,27 +2,21 @@
 import sys
 
 def count(N):
-    print(str(count_0(N)) + " " + str(count_1(N)))
-
-def count_0(N):
-    if N == 0:
-        return 1
-    elif N == 1:
-        return 0
-    else:
-        return count_0(N - 1) + count_0(N - 2)
-
-def count_1(N):
+    num_list = [0, 0]
     if N == 1:
-        return 1
+        num_list[1] += 1
+        return num_list
     elif N == 0:
-        return 0
+        num_list[0] += 1
+        return num_list
     else:
-        return count_1(N - 1) + count_1(N - 2)
-    
+        num_list[0] = count(N - 1)[0] + count(N - 2)[0]
+        num_list[1] = count(N - 1)[1] + count(N - 2)[1]
+        return num_list
     
 T = []
 T.append(sys.stdin.readline())
 
 for i in T:
-    count(int(i))
+    c = count(int(i))
+    print(str(c)[0] + " " + str(c)[1])
