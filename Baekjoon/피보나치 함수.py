@@ -1,7 +1,6 @@
 # 문제 출처 : https://www.acmicpc.net/problem/1003
 import sys
 
-
 def count(N):
     print(str(count_0(N)) + " " + str(count_1(N)))
 
