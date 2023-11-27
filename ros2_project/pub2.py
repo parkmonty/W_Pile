@@ -6,10 +6,10 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPo
 from std_msgs.msg import Bool
 from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleCommand, VehicleLocalPosition, VehicleStatus
 
-class pub(Node):
+class pub2(Node):
     
     def __init__(self):
-        super().__init__('pub')
+        super().__init__('pub2')
         qos_profile = QoSProfile(
             reliability = ReliabilityPolicy.BEST_EFFORT,
             durability = DurabilityPolicy.TRANSIENT_LOCAL,
@@ -18,33 +18,31 @@ class pub(Node):
         )
         
         self.offboard_control_mode_pub = self.create_publisher(
-            OffboardControlMode, '/px4_1/fmu/in/offboard_control_mode', qos_profile)
+            OffboardControlMode, '/px4_2/fmu/in/offboard_control_mode', qos_profile)
         self.trajectory_setpoint_pub = self.create_publisher(
-            TrajectorySetpoint, '/px4_1/fmu/in/trajectory_setpoint', qos_profile)
+            TrajectorySetpoint, '/px4_2/fmu/in/trajectory_setpoint', qos_profile)
         self.vehicle_command_pub = self.create_publisher(
-            VehicleCommand, '/px4_1/fmu/in/vehicle_command', qos_profile)
-        self.multi_disarm_publisher = self.create_publisher(Bool, '/multi/out', qos_profile)
+            VehicleCommand, '/px4_2/fmu/in/vehicle_command', qos_profile)
         
         self.vehicle_local_position_sub = self.create_subscription(
-            VehicleLocalPosition, '/px4_1/fmu/out/vehicle_local_position', self.vehicle_local_position_callback, qos_profile)
+            VehicleLocalPosition, '/px4_2/fmu/out/vehicle_local_position', self.vehicle_local_position_callback, qos_profile)
         self.vehicle_status_sub = self.create_subscription(
-            VehicleStatus, '/px4_1/fmu/out/vehicle_status', self.vehicle_status_callback, qos_profile)
+            VehicleStatus, '/px4_2/fmu/out/vehicle_status', self.vehicle_status_callback, qos_profile)
         
-        # self.setup = False
+        self.vehicle_local_position_sub1 = self.create_subscription(
+            VehicleLocalPosition, '/px4_1/fmu/out/vehicle_local_position', self.vehicle_local_position_callback1, qos_profile)
+        
+        self.multi_disarm_sub = self.create_subscription(Bool, '/multi/out', self.multi_disarm_callback, qos_profile)
+        
         self.position = [0.0, 0.0, 0.0]
         self.rtl = False
         self.offboard_setpoint_counter = 0
         self.vehicle_local_position = VehicleLocalPosition()
+        self.vehicle_local_position1 = VehicleLocalPosition()
         self.vehicle_status = VehicleStatus()
         
         self.timer = self.create_timer(0.1, self.timer_callback)
-    
-    def multi_disarm(self, data):
-        self.get_logger().info('MultiDisarm command sent')
-        msg = Bool()
-        msg.data = data
-        self.multi_disarm_publisher.publish(msg)
-    
+        
     def publish_offboard_control_heartbeat_signal(self):
         msg = OffboardControlMode()
         msg.position = True
@@ -72,7 +70,7 @@ class pub(Node):
         msg.param5 = params.get("param5", 0.0)
         msg.param6 = params.get("param6", 0.0)
         msg.param7 = params.get("param7", 0.0)
-        msg.target_system = 2
+        msg.target_system = 3
         msg.target_component = 1
         msg.source_system = 1
         msg.source_component = 1
@@ -83,15 +81,18 @@ class pub(Node):
     def arm(self):
         self.publish_vehicle_command(
             VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, param1 = 1.0)
-        self.multi_disarm(False)
         self.get_logger().info('Arm command sent')
             
     def disarm(self):
         self.publish_vehicle_command(
             VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, param1 = 0.0)
-        self.multi_disarm(True)
         self.get_logger().info('Disarm command sent')
-            
+    
+    def multi_disarm_callback(self, disarm_command):
+        self.get_logger().info('MultiDisarm command sent')
+        print(disarm_command.data)
+        self.rtl = disarm_command.data
+    
     def engage_offboard_mode(self):
         self.publish_vehicle_command(
             VehicleCommand.VEHICLE_CMD_DO_SET_MODE, param1 = 1.0, param2 = 6.0)
@@ -99,6 +100,9 @@ class pub(Node):
     
     def vehicle_local_position_callback(self, vehicle_local_position):
         self.vehicle_local_position = vehicle_local_position
+        
+    def vehicle_local_position_callback1(self, vehicle_local_position):
+        self.vehicle_local_position1 = vehicle_local_position
     
     def vehicle_status_callback(self, vehicle_status):
         self.vehicle_status = vehicle_status
@@ -110,17 +114,18 @@ class pub(Node):
             self.engage_offboard_mode()
             self.arm()
             
-        if self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD:
+        x = (self.vehicle_local_position.x - self.vehicle_local_position1.x)
+        y = (self.vehicle_local_position.y - self.vehicle_local_position1.y)    
+        
+        self.position[0] = self.vehicle_local_position1.x
+        self.position[1] = self.vehicle_local_position1.y
+        
+        if (self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD) and (x**2 + y**2 > 25.0):
             self.publish_position_setpoint(self.position[0], self.position[1], 0.0)
-            
-        if (self.vehicle_local_position.x - self.position[0]) ** 2 + (self.vehicle_local_position.y - self.position[1]) ** 2 < 4.0:
-            if self.rtl:
-                self.disarm()
-                raise SystemExit
-            self.position[0], self.position[1] = map(float, input("PX4 Rover Position control\n-----------------------------------------\nInput desired position based on NED frame\n-----------------------------------------\n").split())
-
-        if self.position[0] == 0 and self.position[1] == 0:
-            self.rtl = True
+        
+        elif (self.rtl) and (x**2 + y**2 <= 25.0):
+            self.disarm()
+            raise SystemExit
             
         if self.offboard_setpoint_counter < 11:
             self.offboard_setpoint_counter += 1
@@ -129,7 +134,7 @@ def main(args=None) -> None:
     print('Starting offboard control node...')
     # args를 주어 node를 실행함
     rclpy.init(args=args)
-    offboard_control = pub()
+    offboard_control = pub2()
     try:
         rclpy.spin(offboard_control)
     except SystemExit:
