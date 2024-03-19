@@ -3,7 +3,7 @@ import sys
 house_count = int(sys.stdin.readline().strip())
 RGB_price = [list(map(int, sys.stdin.readline().split())) for _ in range(house_count)]
 
-min_price = [[0, 0, 0]] * house_count
+min_price = [[0, 0, 0] for _ in range(house_count)]
 min_price[0] = RGB_price[0]
 
 for i in range(1, house_count):
