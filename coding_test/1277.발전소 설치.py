@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 from math import sqrt
 import heapq
 
@@ -14,11 +13,11 @@ location = []
 for _ in range(plant_count):
     location.append(list(map(int, sys.stdin.readline().split())))
 
-all_distance = np.full((plant_count, plant_count), 1e8)
+all_distance = [[1e8 for _ in range(plant_count)] for _ in range(plant_count)]
 
 for p1 in range(plant_count):
     for p2 in range(plant_count):
-        if p1 >= p2:
+        if p1 > p2:
             continue
 
         all_distance[p1][p2] = dist(location[p1][0], location[p1][1], location[p2][0], location[p2][1])
